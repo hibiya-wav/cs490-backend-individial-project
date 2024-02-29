@@ -1,10 +1,9 @@
 package ds73.cs490backendmilestone2.controller;
-
 import ds73.cs490backendmilestone2.service.QueryService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -43,13 +42,6 @@ public class QueryController {
         return sqlQueryService.viewFilms();
     }
 
-//    @GetMapping("/films/actors/{actorName}")
-//    public List<Map<String, Object>> allFilmsActors(@PathVariable String actorName){
-//        String[] inputs = actorName.trim().toUpperCase().split(" ");
-//        return sqlQueryService.allFilmsActors(inputs[0], inputs[1]);
-//    }
-
-
     @GetMapping("/films/actors/{actorName}")
     public List<Map<String, Object>> allFilmsActors(@PathVariable String actorName) {
         String[] inputs = actorName.trim().toUpperCase().split("\\s+");
@@ -67,8 +59,36 @@ public class QueryController {
         return sqlQueryService.viewCustomer();
     }
 
+    @GetMapping("/customerinfospec/{customerId}")
+    public Map<String, Object> viewSpecificCustomerInfo(@PathVariable int customerId) {
+        return sqlQueryService.viewSpecificCustomerInfo(customerId);
+    }
+
     @GetMapping("/customerinfo/{customerId}")
-    public Map<String, Object> viewSpecificCustomer(@PathVariable int customerId) {
-        return sqlQueryService.viewSpecificCustomer(customerId);
+    public List<Map<String, Object>> viewSpecificCustomer(@PathVariable String customerId) {
+        return sqlQueryService.allCustomerInformation(customerId);
+    }
+
+    @DeleteMapping("/customerdelete/{customerId}")
+    public void deleteCustomer(@PathVariable String customerId) {
+        sqlQueryService.deleteCustomer(customerId);
+    }
+
+    @PostMapping("/customerAdd")
+    public void addCustomer(@RequestBody Map<String, String> customerData) {
+        String firstName = customerData.get("firstName");
+        String lastName = customerData.get("lastName");
+        String email = customerData.get("email");
+        String addressId = customerData.get("addressId");
+        sqlQueryService.addCustomer(firstName, lastName, email, addressId);
+    }
+
+    @PatchMapping("/customerinfospec/{customerId}")
+    public void saveEditedCustomer(@PathVariable int customerId, @RequestBody Map<String, Object> editedCustomerData) {
+        String firstName = (String) editedCustomerData.get("first_name");
+        String lastName = (String) editedCustomerData.get("last_name");
+        String email = (String) editedCustomerData.get("email");
+        sqlQueryService.saveEditedCustomer(customerId, firstName, lastName, email);
     }
 }
+
